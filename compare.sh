@@ -1,11 +1,10 @@
 #!/bin/bash
 
 #ARG 1: local repo (will be copied in /tmp)
+#ARG 2: Output: Html or Ascii
 
 BENCHPR="BENCHPR"
 NAME="algebraic-graphs"
-
-echo "SETTING UP..."
 
 {
 rm -rf /tmp/$BENCHPR
@@ -46,22 +45,21 @@ sed -i "s/(\(\"Alga\", map Shadow Alga.Graph.functions \))/\(\1\),\(\"AlgaOld\",
 
 } &> /dev/null
 
-echo "BUILDING..."
-
 stack build "bench-graph:bench:time" --no-run-benchmarks 
 
 STR=""
 
-ARGS="$@"
-ARGS=$(echo $ARGS | cut -d' ' -f2-)
+ARGS=$(echo "$@" | cut -d' ' -f2- | cut -d' ' -f2-)
+
+if [ $ARGS = $(echo "$@" | cut -d' ' -f2-)  ]
+  then ARGS=""
+fi
 
 for var in $ARGS
 do
 	STR="$STR --only $var"
 done
 
-echo "RUNNING..."
-
-.stack-work/dist/*/*/build/time/time run -l Alga -l AlgaOld $STR
+.stack-work/dist/*/*/build/time/time run -d $2 -l Alga -l AlgaOld $STR 0>&0
 
 popd

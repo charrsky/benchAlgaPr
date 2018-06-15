@@ -74,7 +74,7 @@ do
 	STR="$STR --only $var"
 done
 
-CMDARGS="run -d $3 -l Alga -l AlgaOld $STR"
+CMDARGS="run -d Null -l Alga -l AlgaOld $STR"
 
 echo $CMDARGS
 

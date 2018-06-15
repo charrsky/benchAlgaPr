@@ -3,10 +3,15 @@
 #ARG 1: Stack or Cabal
 #ARG 2: local repo (will be copied in /tmp)
 #ARG 3: Output: Html or Ascii
+#ARG 4: COMMIT ID to rest alga
 
 BENCHPR="BENCHPR"
 NAME="algebraic-graphs"
 BGVERSION="bench-graph-0.1.0.0"
+
+if [ "$#" -ne 4 ]; then
+    echo "You must enter exactly 4 command line arguments"
+fi
 
 {
 rm -rf /tmp/$BENCHPR
@@ -22,6 +27,7 @@ git clone https://github.com/snowleopard/alga.git old
 
 # Will transofrm the actual alga in a package "old", exporting "Algebra.GraphOld"
 cd old
+git reset --hard $4
 sed -i "s/$NAME/old/g" $NAME.cabal
 sed -i "s/Algebra.Graph,/Algebra.GraphOld,/g" $NAME.cabal
 mv $NAME.cabal old.cabal

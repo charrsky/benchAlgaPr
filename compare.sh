@@ -67,13 +67,7 @@ fi
 
 STR=""
 
-ARGS=$(echo "$@" | cut -d' ' -f2- | cut -d' ' -f2- | cut -d' ' -f2-)
-MARGS=$(echo "$@" | cut -d' ' -f2- | cut -d' ' -f2-)
-
-if [ "$ARGS" = "$MARGS" ]
-then
-  ARGS=""
-fi
+ARGS=$(echo "$@" | cut -d' ' -f5-)
 
 for var in $ARGS
 do

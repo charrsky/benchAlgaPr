@@ -4,6 +4,7 @@
 #ARG 2: local repo (will be copied in /tmp)
 #ARG 3: Output: Html or Ascii
 #ARG 4: COMMIT ID to rest alga
+#Other Args: Functions to benchmark
 
 BENCHPR="BENCHPR"
 NAME="algebraic-graphs"

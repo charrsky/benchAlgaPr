@@ -10,8 +10,8 @@ BENCHPR="BENCHPR"
 NAME="algebraic-graphs"
 BGVERSION="bench-graph-0.1.0.0"
 
-if [ "$#" -ne 4 ]; then
-    echo "You must enter exactly 4 command line arguments"
+if [ "$#" -lt 4 ]; then
+    echo "You must enter more than 4 command line arguments"
     exit 1
 fi
 
@@ -59,7 +59,7 @@ sed -i "s/import qualified Alga.Graph/import qualified Alga.Graph\nimport qualif
 sed -i "s/(\(\"Alga\", map Shadow Alga.Graph.functions \))/\(\1\),\(\"AlgaOld\", map Shadow Alga.GraphOld.functions \)/g" bench/ListS.hs
 
 sed -i "s/import qualified Alga.Graph/import qualified Alga.Graph\nimport qualified Alga.GraphOld/g" bench/Time.hs
-sed -i "s/(\(\"Alga\", map Shadow Alga.Graph.functions \))/\(\1\),\(\"AlgaOld\", map Shadow Alga.GraphOld.functions \)/g" bench/Time.hs
+sed -i "s/(\(\"Alga\", benchmarkCreation gr Alga.Graph.mk \))/\(\1\),\(\"AlgaOld\", benchmarkCreation gr Alga.GraphOld.mk \)/g" bench/Time.hs
 
 } &> /dev/null
 

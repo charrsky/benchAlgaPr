@@ -59,7 +59,7 @@ sed -i "s/import qualified Alga.Graph/import qualified Alga.Graph\nimport qualif
 sed -i "s/(\(\"Alga\", map Shadow Alga.Graph.functions \))/\(\1\),\(\"AlgaOld\", map Shadow Alga.GraphOld.functions \)/g" bench/ListS.hs
 
 sed -i "s/import qualified Alga.Graph/import qualified Alga.Graph\nimport qualified Alga.GraphOld/g" bench/Time.hs
-sed -i "s/(\(\"Alga\", benchmarkCreation gr Alga.Graph.mk \))/\(\1\),\(\"AlgaOld\", benchmarkCreation gr Alga.GraphOld.mk \)/g" bench/Time.hs
+sed -i "s/(\(\"Alga\", benchmarkCreation dontBenchLittleOnes gr Alga.Graph.mk \))/\(\1\),\(\"AlgaOld\", benchmarkCreation dontBenchLittleOnes gr Alga.GraphOld.mk \)/g" bench/Time.hs
 
 } &> /dev/null
 
@@ -79,7 +79,7 @@ do
 	STR="$STR --only $var"
 done
 
-CMDARGS="run -d $3 -l Alga -l AlgaOld $STR"
+CMDARGS="run -g (\"Mesh\",4) -g (\"Clique\",4) -i -d $3 -l Alga -l AlgaOld $STR"
 
 echo $CMDARGS
 

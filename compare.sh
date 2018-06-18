@@ -15,7 +15,6 @@ if [ "$#" -lt 4 ]; then
     exit 1
 fi
 
-{
 rm -rf /tmp/$BENCHPR
 mkdir /tmp/$BENCHPR
 
@@ -23,13 +22,19 @@ git clone https://github.com/haskell-perf/graphs /tmp/$BENCHPR/graphs
 
 cp -r $2 /tmp/$BENCHPR/graphs/alga
 
-pushd /tmp/$BENCHPR/graphs
+pushd /tmp/$BENCHPR/graphs/alga
+
+echo "Alga Commit ID: $(git rev-parse HEAD)"
+cd ..
 
 git clone https://github.com/snowleopard/alga.git old
 
 # Will transofrm the actual alga in a package "old", exporting "Algebra.GraphOld"
 cd old
 git reset --hard $4
+
+echo "AlgaOld Commit ID: $(git rev-parse HEAD)"
+
 sed -i "s/$NAME/old/g" $NAME.cabal
 sed -i "s/Algebra.Graph,/Algebra.GraphOld,/g" $NAME.cabal
 mv $NAME.cabal old.cabal
@@ -61,13 +66,11 @@ sed -i "s/(\(\"Alga\", map Shadow Alga.Graph.functions \))/\(\1\),\(\"AlgaOld\",
 sed -i "s/import qualified Alga.Graph/import qualified Alga.Graph\nimport qualified Alga.GraphOld/g" bench/Time.hs
 sed -i "s/(\(\"Alga\", benchmarkCreation dontBenchLittleOnes gr Alga.Graph.mk \))/\(\1\),\(\"AlgaOld\", benchmarkCreation dontBenchLittleOnes gr Alga.GraphOld.mk \)/g" bench/Time.hs
 
-} &> /dev/null
-
 if [ "$1" = "Stack" ]
 then
-  stack build "bench-graph:bench:time" --no-run-benchmarks 
+  stack build "bench-graph:bench:time" --no-run-benchmarks --flag "bench-graph:-reallife"
 else
-  cabal -f -Datasize -f -Space -f -Fgl -f -HashGraph new-build time --enable-benchmarks
+  cabal -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife new-build time --enable-benchmarks
 fi
 
 STR=""

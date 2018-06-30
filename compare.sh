@@ -82,7 +82,7 @@ do
 	STR="$STR --only $var"
 done
 
-CMDARGS="run -g (\"Mesh\",3) -g (\"Clique\",3) -g (\"Circuit\",3) -i -d $3 -l Alga -l AlgaOld $STR"
+CMDARGS="run -g (\"Mesh\",3) -g (\"Clique\",3) -i -d $3 -l Alga -l AlgaOld $STR"
 
 echo $CMDARGS
 

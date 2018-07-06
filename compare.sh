@@ -46,8 +46,8 @@ if [ $1 = "Stack" ]
 then
 sed -i '/^\s*$/d' stack.yaml
 sed -i "s/extra-deps:/  - old\n  - alga\nextra-deps:/g" stack.yaml
-sed -i "s|.*git: https://github.com/snowleopard/alga.git||g" stack.yaml
-sed -i "s/commit: 64e4d908c15d5e79138c6445684b9bef27987e8c//g" stack.yaml
+sed -i "s|.*git:.*||g" stack.yaml
+sed -i "s/.*commit:.*//g" stack.yaml
 else
 echo "packages: \".\" old/ alga/" > cabal.project
 fi

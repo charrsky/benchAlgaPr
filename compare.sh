@@ -99,9 +99,9 @@ sed -i "s/(\(\"Alga\", benchmarkCreation dontBenchLittleOnes gr Alga.Graph.mk \)
 
 if [ "$1" = "Stack" ]
 then
-  stack build "bench-graph:bench:time" --no-run-benchmarks --flag "bench-graph:-reallife" --flag "bench-graph:-datasize" --flag "bench-graph:-space" --flag "bench-graph:-fgl"  --flag "bench-graph:-hashgraph"
+  stack build "bench-graph:bench:time" --no-run-benchmarks --flag "bench-graph:-reallife" --flag "bench-graph:-datasize" --flag "bench-graph:-space" --flag "bench-graph:-fgl"  --flag "bench-graph:-hashgraph" --flag "bench-graph:-chart"
 else
-  cabal -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife new-build time --enable-benchmarks
+  cabal -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart new-build time --enable-benchmarks
 fi
 
 STR=""

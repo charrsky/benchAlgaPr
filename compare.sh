@@ -4,7 +4,7 @@
 #ARG 2: local repo (will be copied in /tmp)
 #ARG 3: Output: Html, Ascii or QuickComparison
 #ARG 4: COMMIT ID to reset alga
-#ARG 5: (Optional, needed if trying to bench specific functions (see below))If set to "True", will bench Alga.Graph.NonEmpty instead of Alga.Graph
+#ARG 5: (Optional, needed if trying to bench specific functions (see below)) If set to "True", will bench Alga.Graph.NonEmpty instead of Alga.Graph
 #Other Args: Functions to benchmark
 
 BENCHPR="BENCHPR"
@@ -62,8 +62,12 @@ if [ $1 = "Stack" ]
 then
 sed -i '/^\s*$/d' stack.yaml
 sed -i "s/extra-deps:/  - old\n  - alga\nextra-deps:/g" stack.yaml
+
+# Remove unecessary extra-deps
+
 sed -i "s|.*git:.*||g" stack.yaml
 sed -i "s/.*commit:.*//g" stack.yaml
+
 else
 echo "packages: \".\" old/ alga/" > cabal.project
 fi
@@ -77,6 +81,7 @@ sed -i "s/Alga.Graph/Alga.GraphOld/g" bench/Alga/GraphOld.hs
 sed -i "s/Algebra.Graph/${FILEHS}Old/g" bench/Alga/GraphOld.hs
 sed -i "s/Algebra.Graph/${FILEHS}/g" bench/Alga/Graph.hs
 
+# If we benchmark NonEmpty
 if [ "$5" = "True" ]
 then
   for n in "bench/Alga/Graph.hs" "bench/Alga/GraphOld.hs"

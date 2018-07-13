@@ -89,6 +89,13 @@ then
     sed -i 's/ vertexList/ vertexList1/g' $n
     sed -i  's/ removeVertex/ removeVertex1/g' $n
   done
+  sed -i "s/\"creation\"/\"edges1\"/g" src/BenchGraph/Time.hs
+
+
+  sed -i "s/\"vertexList\"/\"vertexList1\"/g" src/BenchGraph/Suites.hs
+  sed -i "s/\"removeVertex\"/\"removeVertex1\"/g" src/BenchGraph/Suites.hs
+else
+  sed -i "s/\"creation\"/\"edges\"/g" src/BenchGraph/Time.hs
 fi
 
 sed -i "s/import qualified Alga.Graph/import qualified Alga.Graph\nimport qualified Alga.GraphOld/g" bench/ListS.hs

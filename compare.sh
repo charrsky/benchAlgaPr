@@ -28,16 +28,16 @@ FILEHS=$(echo "$FILE" | sed 's/.\{3\}$//' | sed 's|/|.|g')
 rm -rf /tmp/$BENCHPR
 mkdir /tmp/$BENCHPR
 
-git clone https://github.com/haskell-perf/graphs /tmp/$BENCHPR/graphs 
+git clone -q https://github.com/haskell-perf/graphs /tmp/$BENCHPR/graphs
 
 cp -r $2 /tmp/$BENCHPR/graphs/alga
 
-pushd /tmp/$BENCHPR/graphs/alga
+pushd /tmp/$BENCHPR/graphs/alga &> /dev/null
 
 echo "Alga Commit ID: $(git rev-parse HEAD)"
 cd ..
 
-git clone https://github.com/snowleopard/alga.git old
+git clone -q https://github.com/snowleopard/alga.git old
 
 # Will transofrm the actual alga in a package "old", exporting "Algebra.GraphOld"
 cd old
@@ -111,9 +111,9 @@ sed -i "s/(\(\"Alga\", benchmarkCreation dontBenchLittleOnes gr Alga.Graph.mk \)
 
 if [ "$1" = "Stack" ]
 then
-  stack build "bench-graph:bench:time" --no-run-benchmarks --flag "bench-graph:-reallife" --flag "bench-graph:-datasize" --flag "bench-graph:-space" --flag "bench-graph:-fgl"  --flag "bench-graph:-hashgraph" --flag "bench-graph:-chart"
+  stack build "bench-graph:bench:time" --no-run-benchmarks --flag "bench-graph:-reallife" --flag "bench-graph:-datasize" --flag "bench-graph:-space" --flag "bench-graph:-fgl"  --flag "bench-graph:-hashgraph" --flag "bench-graph:-chart" &> /dev/null
 else
-  cabal -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart new-build time --enable-benchmarks
+  cabal -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart new-build time --enable-benchmarks &> /dev/null
 fi
 
 STR=""

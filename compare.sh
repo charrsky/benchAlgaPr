@@ -109,12 +109,22 @@ sed -i "s/(\(\"Alga\", map Shadow Alga.Graph.functions \))/\(\1\),\(\"AlgaOld\",
 sed -i "s/import qualified Alga.Graph/import qualified Alga.Graph\nimport qualified Alga.GraphOld/g" bench/Time.hs
 sed -i "s/(\(\"Alga\", benchmarkCreation dontBenchLittleOnes gr Alga.Graph.mk \))/\(\1\),\(\"AlgaOld\", benchmarkCreation dontBenchLittleOnes gr Alga.GraphOld.mk \)/g" bench/Time.hs
 
+# Output something every 5 minutes or Travis kills the job
+echo ""
+echo "Install dependencies and build the benchmarking suite"
+while sleep 300; do echo "> Still running..."; done &
+
 if [ "$1" = "Stack" ]
 then
   stack build "bench-graph:bench:time" --no-run-benchmarks --flag "bench-graph:-reallife" --flag "bench-graph:-datasize" --flag "bench-graph:-space" --flag "bench-graph:-fgl"  --flag "bench-graph:-hashgraph" --flag "bench-graph:-chart" &> /dev/null
 else
   cabal -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart new-build time --enable-benchmarks &> /dev/null
 fi
+
+exec 3>&2
+exec 2> /dev/null
+
+kill "%1"
 
 STR=""
 
@@ -127,7 +137,8 @@ done
 
 CMDARGS="run -g (\"Mesh\",3) -g (\"Clique\",3) -g (\"Circuit\",3) -i -d $3 -l Alga -l AlgaOld $STR"
 
-echo $CMDARGS
+echo ""
+echo "Args: $CMDARGS"
 
 if [ "$1" = "Stack" ]
 then

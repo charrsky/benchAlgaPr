@@ -7,6 +7,8 @@
 #ARG 5: (Optional, needed if trying to bench specific functions (see below)) If set to "True", will bench Alga.Graph.NonEmpty instead of Alga.Graph
 #Other Args: Functions to benchmark
 
+# TODO switch to PackageImports everywhere
+
 BENCHPR="BENCHPR"
 NAME="algebraic-graphs"
 BGVERSION="bench-graph-0.1.0.0"
@@ -78,8 +80,16 @@ sed -ri "s/$NAME(.*)/old, $NAME\1/g" bench-graph.cabal
 cp bench/Alga/Graph.hs bench/Alga/GraphOld.hs
 
 sed -i "s/Alga.Graph/Alga.GraphOld/g" bench/Alga/GraphOld.hs
-sed -i "s/Algebra.Graph/${FILEHS}Old/g" bench/Alga/GraphOld.hs
-sed -i "s/Algebra.Graph/${FILEHS}/g" bench/Alga/Graph.hs
+sed -i "s/Algebra.Graph$/${FILEHS}/g" bench/Alga/Graph.hs
+sed -i "s/Algebra.Graph$/${FILEHS}Old/g" bench/Alga/GraphOld.hs
+
+for n in "bench/Alga/Graph.hs" "bench/Alga/GraphOld.hs"
+do
+  sed -i '1 i\{-# LANGUAGE PackageImports #-}' $n
+done
+
+sed -i "s/import qualified Algebra.Graph.AdjacencyIntMap as AIM/import qualified \"$NAME\" Algebra.Graph.AdjacencyIntMap as AIM/" bench/Alga/Graph.hs
+sed -i "s/import qualified Algebra.Graph.AdjacencyIntMap as AIM/import qualified \"old\" Algebra.Graph.AdjacencyIntMap as AIM/" bench/Alga/GraphOld.hs
 
 # If we benchmark NonEmpty
 if [ "$5" = "True" ]

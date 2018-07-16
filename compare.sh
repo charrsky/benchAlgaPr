@@ -93,6 +93,7 @@ then
     sed -i 's/, S.isEmpty isEmpty//g' $n
     sed -i 's/ vertexList/ vertexList1/g' $n
     sed -i  's/ removeVertex/ removeVertex1/g' $n
+    sed -i  's/ foldg AIM.empty/ foldg1/g' $n
   done
   sed -i "s/\"creation\"/\"edges1\"/g" src/BenchGraph/Time.hs
 

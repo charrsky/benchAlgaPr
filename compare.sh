@@ -146,7 +146,15 @@ do
 	STR="$STR --only $var"
 done
 
-CMDARGS="run -g (\"Mesh\",3) -g (\"Clique\",3) -g (\"Circuit\",3) -i -d $3 -l Alga -l AlgaOld $STR"
+# Drop some benchs, only if we don't require explicitly them
+if [ "STR" = ""]
+then
+  DROPPED=""
+else
+  DROPPED="-n dff -n topSort"
+fi
+
+CMDARGS="run -g (\"Mesh\",3) -g (\"Clique\",3) -g (\"Circuit\",3) -i -d $3 -l Alga -l AlgaOld $DROPPED $STR"
 
 echo ""
 echo "Args: $CMDARGS"

@@ -100,7 +100,7 @@ then
     sed -i 's/Graph Int/NonEmptyGraph Int/g' $n
     sed -i 's/mk = edges/mk = edges1 . L.fromList/' $n
     sed -i 's/clique/clique1 $ L.fromList/g' $n
-    sed -i 's/, S.isEmpty isEmpty//g' $n
+    sed -i 's/.*isEmpty.*//g' $n
     sed -i 's/ vertexList/ vertexList1/g' $n
     sed -i  's/ removeVertex/ removeVertex1/g' $n
     sed -i  's/ foldg AIM.empty/ foldg1/g' $n

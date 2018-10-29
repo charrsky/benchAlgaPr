@@ -50,14 +50,6 @@ echo "AlgaOld Commit ID: $(git rev-parse HEAD)"
 sed -i "s/$NAME/old/g" $NAME.cabal
 mv $NAME.cabal old.cabal
 
-for n in "Algebra/Graph.hs" "Algebra/Graph/NonEmpty.hs"
-do
-  nPrime=$(echo "$n" | sed 's/.\{3\}$//' | sed 's|/|.|g')
-  sed -i "s/$nPrime,/${nPrime}Old,/g" old.cabal
-  mv "src/$n" "src/$(echo "$n" | sed 's/.\{3\}$//')Old.hs"
-  find . -type f -iname '*.hs' -exec sed -i "s/$nPrime[^.]/${nPrime}Old/g" "{}" +;
-done
-
 cd ..
 
 if [ $1 = "Stack" ]
@@ -74,19 +66,20 @@ else
 echo "packages: \".\" old/ alga/" > cabal.project
 fi
 
-sed -i "s/$FILEHS/$FILEHS,${FILEHS}Old/g" bench-graph.cabal
+ed -i "s/$FILEHS/$FILEHS,${FILEHS}Old/g" bench-graph.cabal
 sed -ri "s/$NAME(.*)/old, $NAME\1/g" bench-graph.cabal
 
 cp bench/Alga/Graph.hs bench/Alga/GraphOld.hs
-
-sed -i "s/Alga.Graph/Alga.GraphOld/g" bench/Alga/GraphOld.hs
-sed -i "s/Algebra.Graph$/${FILEHS}/g" bench/Alga/Graph.hs
-sed -i "s/Algebra.Graph$/${FILEHS}Old/g" bench/Alga/GraphOld.hs
 
 for n in "bench/Alga/Graph.hs" "bench/Alga/GraphOld.hs"
 do
   sed -i '1 i\{-# LANGUAGE PackageImports #-}' $n
 done
+
+sed -i "s/import Algebra.Graph/import \"$NAME\" Algebra.Graph/g" bench/Alga/Graph.hs
+sed -i "s/import Algebra.Graph/import \"old\" Algebra.Graph/g" bench/Alga/GraphOld.hs
+sed -i "s/module Alga.Graph/module Alga.GraphOld/g" bench/Alga/GraphOld.hs
+
 
 sed -i "s/import qualified Algebra.Graph.AdjacencyIntMap as AIM/import qualified \"$NAME\" Algebra.Graph.AdjacencyIntMap as AIM/" bench/Alga/Graph.hs
 sed -i "s/import qualified Algebra.Graph.AdjacencyIntMap as AIM/import qualified \"old\" Algebra.Graph.AdjacencyIntMap as AIM/" bench/Alga/GraphOld.hs
@@ -127,13 +120,13 @@ while sleep 300; do echo "> Still running..."; done &
 
 if [ "$1" = "Stack" ]
 then
-  stack build "bench-graph:bench:time" --no-run-benchmarks --flag "bench-graph:-reallife" --flag "bench-graph:-datasize" --flag "bench-graph:-space" --flag "bench-graph:-fgl"  --flag "bench-graph:-hashgraph" --flag "bench-graph:-chart" &> /dev/null
+  stack build "bench-graph:bench:time" --no-run-benchmarks --flag "bench-graph:-reallife" --flag "bench-graph:-datasize" --flag "bench-graph:-space" --flag "bench-graph:-fgl"  --flag "bench-graph:-hashgraph" --flag "bench-graph:-chart" # &> /dev/null
 else
-  cabal -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart new-build time --enable-benchmarks &> /dev/null
+  cabal -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart new-build time --enable-benchmarks # &> /dev/null
 fi
 
-exec 3>&2
-exec 2> /dev/null
+# exec 3>&2
+# exec 2> /dev/null
 
 kill "%1"
 

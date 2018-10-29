@@ -66,7 +66,7 @@ else
 echo "packages: \".\" old/ alga/" > cabal.project
 fi
 
-ed -i "s/$FILEHS/$FILEHS,${FILEHS}Old/g" bench-graph.cabal
+sed -i "s/$FILEHS/$FILEHS,${FILEHS}Old/g" bench-graph.cabal
 sed -ri "s/$NAME(.*)/old, $NAME\1/g" bench-graph.cabal
 
 cp bench/Alga/Graph.hs bench/Alga/GraphOld.hs
@@ -90,7 +90,7 @@ then
   for n in "bench/Alga/Graph.hs" "bench/Alga/GraphOld.hs"
   do
     sed -i "s/import BenchGraph.Types/import BenchGraph.Types\nimport qualified Data.List.NonEmpty as L/" $n
-    sed -i 's/Graph Int/NonEmptyGraph Int/g' $n
+    sed -i 's/Algebra.Graph$/Algebra.Graph.NonEmpty/g' $n
     sed -i 's/mk = edges/mk = edges1 . L.fromList/' $n
     sed -i 's/clique/clique1 $ L.fromList/g' $n
     sed -i 's/.*isEmpty.*//g' $n
@@ -120,13 +120,13 @@ while sleep 300; do echo "> Still running..."; done &
 
 if [ "$1" = "Stack" ]
 then
-  stack build "bench-graph:bench:time" --no-run-benchmarks --flag "bench-graph:-reallife" --flag "bench-graph:-datasize" --flag "bench-graph:-space" --flag "bench-graph:-fgl"  --flag "bench-graph:-hashgraph" --flag "bench-graph:-chart" # &> /dev/null
+  stack build "bench-graph:bench:time" --no-run-benchmarks --flag "bench-graph:-reallife" --flag "bench-graph:-datasize" --flag "bench-graph:-space" --flag "bench-graph:-fgl"  --flag "bench-graph:-hashgraph" --flag "bench-graph:-chart" &> /dev/null
 else
-  cabal -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart new-build time --enable-benchmarks # &> /dev/null
+  cabal -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart new-build time --enable-benchmarks &> /dev/null
 fi
 
-# exec 3>&2
-# exec 2> /dev/null
+exec 3>&2
+exec 2> /dev/null
 
 kill "%1"
 

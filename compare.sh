@@ -84,6 +84,9 @@ sed -i "s/module Alga.Graph/module Alga.GraphOld/g" bench/Alga/GraphOld.hs
 sed -i "s/import qualified Algebra.Graph.AdjacencyIntMap as AIM/import qualified \"$NAME\" Algebra.Graph.AdjacencyIntMap as AIM/" bench/Alga/Graph.hs
 sed -i "s/import qualified Algebra.Graph.AdjacencyIntMap as AIM/import qualified \"old\" Algebra.Graph.AdjacencyIntMap as AIM/" bench/Alga/GraphOld.hs
 
+sed -i "s/import qualified Algebra.Graph.AdjacencyIntMap.Algorithm as AIM/import qualified \"$NAME\" Algebra.Graph.AdjacencyIntMap.Algorithm as AIM/" bench/Alga/Graph.hs
+sed -i "s/import qualified Algebra.Graph.AdjacencyIntMap.Algorithm as AIM/import qualified \"old\" Algebra.Graph.AdjacencyIntMap.Algorithm as AIM/" bench/Alga/GraphOld.hs
+
 # If we benchmark NonEmpty
 if [ "$5" = "True" ]
 then

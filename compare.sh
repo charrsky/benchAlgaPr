@@ -125,7 +125,7 @@ if [ "$1" = "Stack" ]
 then
   stack build "bench-graph:bench:time" --no-run-benchmarks --flag "bench-graph:-reallife" --flag "bench-graph:-datasize" --flag "bench-graph:-space" --flag "bench-graph:-fgl"  --flag "bench-graph:-hashgraph" --flag "bench-graph:-chart" &> /dev/null
 else
-  cabal -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart new-build time --enable-benchmarks &> /dev/null
+  cabal new-build time --enable-benchmarks -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart -f Time &> /dev/null
 fi
 
 exec 3>&2

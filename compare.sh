@@ -1,20 +1,26 @@
 #!/bin/bash
 
-#ARG 1: Stack or Cabal
-#ARG 2: local repo (will be copied in /tmp)
-#ARG 3: Output: Html, Ascii or QuickComparison
-#ARG 4: COMMIT ID to reset alga
-#ARG 5: (Optional, needed if trying to bench specific functions (see below)) If set to "True", will bench Alga.Graph.NonEmpty instead of Alga.Graph
-#Other Args: Functions to benchmark
-
 # TODO switch to PackageImports everywhere
 
-BENCHPR="BENCHPR"
+BENCHDIR=$(mktemp -d)
 NAME="algebraic-graphs"
 BGVERSION="bench-graph-0.1.0.0"
 
+if [ "$1" == "help" ]; then
+    echo "Usage:"
+    echo "./compare.sh A B C D [E F [...]]"
+    echo "A: 'Stack' or 'Cabal'"
+    echo "B: local repo"
+    echo "C: 'Html', 'Ascii' or 'QuickComparison'"
+    echo "D: Commit ID"
+    echo "E: [OPTIONAL] If 'True', will benchmark NonEmpty graphs"
+    echo "F [...]: [OPTIONAL] Particular functions to benchmark"
+    exit 1
+fi
+
 if [ "$#" -lt 4 ]; then
     echo "You must enter more than 3 command line arguments"
+    echo "'./compare.sh help' for help"
     exit 1
 fi
 
@@ -27,21 +33,18 @@ fi
 
 FILEHS=$(echo "$FILE" | sed 's/.\{3\}$//' | sed 's|/|.|g')
 
-rm -rf /tmp/$BENCHPR
-mkdir /tmp/$BENCHPR
+git clone -q https://github.com/haskell-perf/graphs $BENCHDIR/graphs
 
-git clone -q https://github.com/haskell-perf/graphs /tmp/$BENCHPR/graphs
+cp -r $2 $BENCHDIR/graphs/alga
 
-cp -r $2 /tmp/$BENCHPR/graphs/alga
-
-pushd /tmp/$BENCHPR/graphs/alga &> /dev/null
+pushd $BENCHDIR/graphs/alga &> /dev/null
 
 echo "Alga Commit ID: $(git rev-parse HEAD)"
 cd ..
 
 git clone -q https://github.com/snowleopard/alga.git old
 
-# Will transofrm the actual alga in a package "old", exporting "Algebra.GraphOld"
+# Will transofrm the actual alga in a package "old"
 cd old
 git reset --hard $4
 
@@ -58,7 +61,6 @@ sed -i '/^\s*$/d' stack.yaml
 sed -i "s/extra-deps:/  - old\n  - alga\nextra-deps:/g" stack.yaml
 
 # Remove unecessary extra-deps
-
 sed -i "s|.*git:.*||g" stack.yaml
 sed -i "s/.*commit:.*//g" stack.yaml
 
@@ -66,6 +68,7 @@ else
 echo "packages: \".\" old/ alga/" > cabal.project
 fi
 
+# Copy benchmarks files
 sed -i "s/$FILEHS/$FILEHS,${FILEHS}Old/g" bench-graph.cabal
 sed -ri "s/$NAME(.*)/old, $NAME\1/g" bench-graph.cabal
 
@@ -125,7 +128,7 @@ if [ "$1" = "Stack" ]
 then
   stack build "bench-graph:bench:time" --no-run-benchmarks --flag "bench-graph:-reallife" --flag "bench-graph:-datasize" --flag "bench-graph:-space" --flag "bench-graph:-fgl"  --flag "bench-graph:-hashgraph" --flag "bench-graph:-chart" &> /dev/null
 else
-  cabal new-build time --enable-benchmarks -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart -f Time &> /dev/null
+  cabal new-build time --enable-benchmarks -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart -f Time -f Alga -f AlgaOld &> /dev/null
 fi
 
 exec 3>&2
@@ -162,3 +165,5 @@ else
   ./dist-newstyle/build/x86_64-linux/*/$BGVERSION/build/time/time $CMDARGS 0>&0
 fi
 popd
+
+rm -rf $BENCHDIR

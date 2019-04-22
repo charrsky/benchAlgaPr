@@ -9,7 +9,7 @@ BGVERSION="bench-graph-0.1.0.0"
 if [ "$1" == "help" ]; then
     echo "Usage:"
     echo "./compare.sh A B C D [E F [...]]"
-    echo "A: 'Stack' or 'Cabal'"
+    echo "A: 'Stack' or the path of the cabal binary"
     echo "B: local repo"
     echo "C: 'Html', 'Ascii' or 'QuickComparison'"
     echo "D: Commit ID"
@@ -128,7 +128,7 @@ if [ "$1" = "Stack" ]
 then
   stack build "bench-graph:bench:time" --no-run-benchmarks --flag "bench-graph:-reallife" --flag "bench-graph:-datasize" --flag "bench-graph:-space" --flag "bench-graph:-fgl"  --flag "bench-graph:-hashgraph" --flag "bench-graph:-chart"
 else
-  cabal new-build time --enable-benchmarks -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart -f Time -f Alga -f AlgaOld
+  $1 new-build time --enable-benchmarks -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart -f Time -f Alga -f AlgaOld
 fi
 
 kill "%1"
@@ -159,7 +159,7 @@ if [ "$1" = "Stack" ]
 then
   .stack-work/dist/*/*/build/time/time $CMDARGS
 else
-  cabal new-run time --enable-benchmarks -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart -f Time -f Alga -f AlgaOld -- $CMDARGS
+  $1 new-run time --enable-benchmarks -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart -f Time -f Alga -f AlgaOld -- $CMDARGS
 fi
 popd
 

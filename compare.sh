@@ -38,7 +38,7 @@ git clone -q https://github.com/haskell-perf/graphs $BENCHDIR/graphs
 
 cp -r $2 $BENCHDIR/graphs/alga
 
-pushd $BENCHDIR/graphs/alga
+pushd $BENCHDIR/graphs/alga &> /dev/null
 
 echo "Alga Commit ID: $(git rev-parse HEAD)"
 cd ..
@@ -126,10 +126,13 @@ while sleep 300; do echo "> Still running..."; done &
 
 if [ "$1" = "Stack" ]
 then
-  stack build "bench-graph:bench:time" --no-run-benchmarks --flag "bench-graph:-reallife" --flag "bench-graph:-datasize" --flag "bench-graph:-space" --flag "bench-graph:-fgl"  --flag "bench-graph:-hashgraph" --flag "bench-graph:-chart"
+  stack build "bench-graph:bench:time" --no-run-benchmarks --flag "bench-graph:-reallife" --flag "bench-graph:-datasize" --flag "bench-graph:-space" --flag "bench-graph:-fgl"  --flag "bench-graph:-hashgraph" --flag "bench-graph:-chart" &> /dev/null
 else
-  $1 new-build time $(if [ "$HC" != "" ]; then echo "-w $HC"; else echo ""; fi;) --enable-benchmarks -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart -f Time -f Alga -f AlgaOld --ghc-options=-dynamic
+  $1 new-build time $(if [ "$HC" != "" ]; then echo "-w $HC"; else echo ""; fi;) --enable-benchmarks -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart -f Time -f Alga -f AlgaOld &> /dev/null
 fi
+
+exec 3>&2
+exec 2> /dev/null
 
 kill "%1"
 
@@ -157,9 +160,9 @@ echo "Args: $CMDARGS"
 
 if [ "$1" = "Stack" ]
 then
-  .stack-work/dist/*/*/build/time/time $CMDARGS
+  .stack-work/dist/*/*/build/time/time $CMDARGS 0>&0
 else
-  $1 new-run time $(if [ "$HC" != "" ]; then echo "-w $HC"; else echo ""; fi;) --enable-benchmarks -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart -f Time -f Alga -f AlgaOld --ghc-options=-dynamic -- $CMDARGS
+  $1 new-run time $(if [ "$HC" != "" ]; then echo "-w $HC"; else echo ""; fi;) --enable-benchmarks -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart -f Time -f Alga -f AlgaOld --ghc-options=-dynamic -- $CMDARGS 0>&0
 fi
 popd
 

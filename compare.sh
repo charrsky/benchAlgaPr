@@ -143,7 +143,7 @@ do
 done
 
 # Drop some benchs, only if we don't require explicitly them
-if [ "STR" = ""]
+if [ "$STR" = ""]
 then
   DROPPED=""
 else

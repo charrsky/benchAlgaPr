@@ -15,6 +15,7 @@ if [ "$1" == "help" ]; then
     echo "D: Commit ID"
     echo "E: [OPTIONAL] If 'True', will benchmark NonEmpty graphs"
     echo "F [...]: [OPTIONAL] Particular functions to benchmark"
+    echo "\n You can set the HC variable to specify a specific path for GHC"
     exit 1
 fi
 
@@ -83,7 +84,6 @@ sed -i "s/import Algebra.Graph/import \"$NAME\" Algebra.Graph/g" bench/Alga/Grap
 sed -i "s/import Algebra.Graph/import \"old\" Algebra.Graph/g" bench/Alga/GraphOld.hs
 sed -i "s/module Alga.Graph/module Alga.GraphOld/g" bench/Alga/GraphOld.hs
 
-
 sed -i "s/import qualified Algebra.Graph.AdjacencyIntMap as AIM/import qualified \"$NAME\" Algebra.Graph.AdjacencyIntMap as AIM/" bench/Alga/Graph.hs
 sed -i "s/import qualified Algebra.Graph.AdjacencyIntMap as AIM/import qualified \"old\" Algebra.Graph.AdjacencyIntMap as AIM/" bench/Alga/GraphOld.hs
 
@@ -128,7 +128,7 @@ if [ "$1" = "Stack" ]
 then
   stack build "bench-graph:bench:time" --no-run-benchmarks --flag "bench-graph:-reallife" --flag "bench-graph:-datasize" --flag "bench-graph:-space" --flag "bench-graph:-fgl"  --flag "bench-graph:-hashgraph" --flag "bench-graph:-chart"
 else
-  $1 new-build time --enable-benchmarks -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart -f Time -f Alga -f AlgaOld
+  $1 new-build time $(if [ "$HC" != "" ]; then echo "-w $HC"; else echo ""; fi;) --enable-benchmarks -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart -f Time -f Alga -f AlgaOld --ghc-options=-dynamic
 fi
 
 kill "%1"
@@ -159,7 +159,7 @@ if [ "$1" = "Stack" ]
 then
   .stack-work/dist/*/*/build/time/time $CMDARGS
 else
-  $1 new-run time --enable-benchmarks -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart -f Time -f Alga -f AlgaOld -- $CMDARGS
+  $1 new-run time $(if [ "$HC" != "" ]; then echo "-w $HC"; else echo ""; fi;) --enable-benchmarks -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart -f Time -f Alga -f AlgaOld --ghc-options=-dynamic -- $CMDARGS
 fi
 popd
 

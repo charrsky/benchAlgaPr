@@ -37,7 +37,7 @@ git clone -q https://github.com/haskell-perf/graphs $BENCHDIR/graphs
 
 cp -r $2 $BENCHDIR/graphs/alga
 
-pushd $BENCHDIR/graphs/alga &> /dev/null
+pushd $BENCHDIR/graphs/alga
 
 echo "Alga Commit ID: $(git rev-parse HEAD)"
 cd ..
@@ -126,13 +126,10 @@ while sleep 300; do echo "> Still running..."; done &
 
 if [ "$1" = "Stack" ]
 then
-  stack build "bench-graph:bench:time" --no-run-benchmarks --flag "bench-graph:-reallife" --flag "bench-graph:-datasize" --flag "bench-graph:-space" --flag "bench-graph:-fgl"  --flag "bench-graph:-hashgraph" --flag "bench-graph:-chart" &> /dev/null
+  stack build "bench-graph:bench:time" --no-run-benchmarks --flag "bench-graph:-reallife" --flag "bench-graph:-datasize" --flag "bench-graph:-space" --flag "bench-graph:-fgl"  --flag "bench-graph:-hashgraph" --flag "bench-graph:-chart"
 else
-  cabal new-build time --enable-benchmarks -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart -f Time -f Alga -f AlgaOld &> /dev/null
+  cabal new-build time --enable-benchmarks -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart -f Time -f Alga -f AlgaOld
 fi
-
-exec 3>&2
-exec 2> /dev/null
 
 kill "%1"
 
@@ -160,9 +157,9 @@ echo "Args: $CMDARGS"
 
 if [ "$1" = "Stack" ]
 then
-  .stack-work/dist/*/*/build/time/time $CMDARGS 0>&0
+  .stack-work/dist/*/*/build/time/time $CMDARGS
 else
-  ./dist-newstyle/build/x86_64-linux/*/$BGVERSION/build/time/time $CMDARGS 0>&0
+  ./dist-newstyle/build/x86_64-linux/*/$BGVERSION/build/time/time $CMDARGS
 fi
 popd
 

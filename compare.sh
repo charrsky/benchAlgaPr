@@ -159,7 +159,7 @@ if [ "$1" = "Stack" ]
 then
   .stack-work/dist/*/*/build/time/time $CMDARGS
 else
-  ./dist-newstyle/build/x86_64-linux/*/$BGVERSION/build/time/time $CMDARGS
+  cabal new-run time --enable-benchmarks -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart -f Time -f Alga -f AlgaOld -- $CMDARGS
 fi
 popd
 

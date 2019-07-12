@@ -160,7 +160,7 @@ echo "Args: $CMDARGS"
 
 if [ "$1" = "Stack" ]
 then
-  .stack-work/dist/*/*/build/time/time $CMDARGS 0>&0
+  stack build "bench-graph:bench:time" --flag "bench-graph:-reallife" --flag "bench-graph:-datasize" --flag "bench-graph:-space" --flag "bench-graph:-fgl"  --flag "bench-graph:-hashgraph" --flag "bench-graph:-chart" --ba $CMDARGS 0>&0
 else
   $1 new-run time $(if [ "$HC" != "" ]; then echo "-w $HC"; else echo ""; fi;) --enable-benchmarks -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart -f Time -f Alga -f AlgaOld -- $CMDARGS 0>&0
 fi

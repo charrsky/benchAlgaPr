@@ -90,6 +90,12 @@ sed -i "s/import qualified Algebra.Graph.AdjacencyIntMap as AIM/import qualified
 sed -i "s/import qualified Algebra.Graph.AdjacencyIntMap.Algorithm as AIM/import qualified \"$NAME\" Algebra.Graph.AdjacencyIntMap.Algorithm as AIM/" bench/Alga/Graph.hs
 sed -i "s/import qualified Algebra.Graph.AdjacencyIntMap.Algorithm as AIM/import qualified \"old\" Algebra.Graph.AdjacencyIntMap.Algorithm as AIM/" bench/Alga/GraphOld.hs
 
+sed -i "s/import qualified Algebra.Graph.AdjacencyMap as AM/import qualified \"$NAME\" Algebra.Graph.AdjacencyMap as AM/" bench/Alga/Graph.hs
+sed -i "s/import qualified Algebra.Graph.AdjacencyMap as AM/import qualified \"old\" Algebra.Graph.AdjacencyMap as AM/" bench/Alga/GraphOld.hs
+
+sed -i "s/import qualified Algebra.Graph.AdjacencyMap.Algorithm as AM/import qualified \"$NAME\" Algebra.Graph.AdjacencyMap.Algorithm as AM/" bench/Alga/Graph.hs
+sed -i "s/import qualified Algebra.Graph.AdjacencyMap.Algorithm as AM/import qualified \"old\" Algebra.Graph.AdjacencyMap.Algorithm as AM/" bench/Alga/GraphOld.hs
+
 # If we benchmark NonEmpty
 if [ "$5" = "True" ]
 then

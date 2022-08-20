@@ -168,9 +168,11 @@ echo "Args: $CMDARGS"
 if [ "$1" = "Stack" ]
 then
   PREF=$(stack path | grep dist | sed -e "s/dist-dir: //")
-  $PREF/build/time/time $CMDARGS 0>&0
+  RES=$($PREF/build/time/time $CMDARGS 0>&0)
+  echo "$RES"
 else
-  $1 new-run time $(if [ "$HC" != "" ]; then echo "-w $HC"; else echo ""; fi;) --enable-benchmarks -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart -f Time -f Alga -f AlgaOld -- $CMDARGS 0>&0
+  RES=$($1 new-run time $(if [ "$HC" != "" ]; then echo "-w $HC"; else echo ""; fi;) --enable-benchmarks -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart -f Time -f Alga -f AlgaOld -- $CMDARGS 0>&0)
+  echo "$RES"
 fi
 popd
 

@@ -131,11 +131,14 @@ echo ""
 echo "Install dependencies and build the benchmarking suite"
 while sleep 300; do echo "> Still running..."; done &
 
+# Build
 if [ "$1" = "Stack" ]
 then
   stack build "bench-graph:bench:time" --no-run-benchmarks --flag "bench-graph:-reallife" --flag "bench-graph:-datasize" --flag "bench-graph:-space" --flag "bench-graph:-fgl"  --flag "bench-graph:-hashgraph" --flag "bench-graph:-chart" &> /dev/null
+  echo "Building..."
 else
   $1 new-build time $(if [ "$HC" != "" ]; then echo "-w $HC"; else echo ""; fi;) --enable-benchmarks -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart -f Time -f Alga -f AlgaOld &> /dev/null
+  echo "Building..."
 fi
 
 exec 3>&2
@@ -169,10 +172,10 @@ if [ "$1" = "Stack" ]
 then
   PREF=$(stack path | grep dist | sed -e "s/dist-dir: //")
   RES=$($PREF/build/time/time $CMDARGS 0>&0)
-  echo "$RES"
+  echo "Running... \n$RES"
 else
   RES=$($1 new-run time $(if [ "$HC" != "" ]; then echo "-w $HC"; else echo ""; fi;) --enable-benchmarks -f -Datasize -f -Space -f -Fgl -f -HashGraph -f -RealLife -f -Chart -f Time -f Alga -f AlgaOld -- $CMDARGS 0>&0)
-  echo "$RES"
+  echo "Running... \n$RES"
 fi
 popd
 
